@@ -17,7 +17,7 @@ package org.cloudbits;
 
 import android.app.Application;
 
-public class Cloudbits extends Application {
+public class CloudbitsApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
