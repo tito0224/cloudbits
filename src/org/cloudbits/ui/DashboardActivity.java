@@ -28,3 +28,4 @@ public class DashboardActivity extends Activity {
         setContentView(R.layout.main);
     }
 }
+
