@@ -19,13 +19,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.cloudbits"
       android:versionCode="1"
-      android:versionName="0.1">
+      android:versionName="0.1.1">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-sdk android:targetSdkVersion="8" android:minSdkVersion="7" />
 
-    <application android:name="Cloudbits" android:label="@string/app_name" android:icon="@drawable/icon">
-        <activity android:name=".ui.DashboardActivity"
+    <application android:name="CloudbitsApplication" android:label="@string/app_name" android:icon="@drawable/icon">
+        <activity android:name=".ui.DashboardActivity" android:theme="@style/Theme.Main"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
