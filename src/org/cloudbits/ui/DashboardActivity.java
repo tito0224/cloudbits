@@ -16,7 +16,9 @@
 package org.cloudbits.ui;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.widget.Button;
 
 import org.cloudbits.R;
 
@@ -26,6 +28,24 @@ public class DashboardActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        
+        setDashboardTypeface();
+    }
+    
+    private void setDashboardTypeface() {
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/euro-regular.ttf");
+        
+        Button btnUnread = (Button) findViewById(R.id.dashboard_btn_unread);
+        btnUnread.setTypeface(tf);
+        
+        Button btnStarred = (Button) findViewById(R.id.dashboard_btn_starred);
+        btnStarred.setTypeface(tf);
+        
+        Button btnPopular = (Button) findViewById(R.id.dashboard_btn_popular);
+        btnPopular.setTypeface(tf);
+        
+        Button btnSubscriptions = (Button) findViewById(R.id.dashboard_btn_subscriptions);
+        btnSubscriptions.setTypeface(tf);
     }
 }
 

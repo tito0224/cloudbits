@@ -18,4 +18,5 @@
 -->
 <resources>
     <color name="base_background">#4D4D4D</color>
+    <color name="dashboard_label">#FFFFFF</color>
 </resources>

@@ -29,5 +29,69 @@
         android:layout_height="wrap_content"
         android:background="@drawable/titlebar_divider" />
         
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:padding="6dip">
+    
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0">
+        
+            <Button android:id="@+id/dashboard_btn_unread"
+                style="@style/DashboardButton"
+                android:text="@string/btn_unread"
+                android:drawableTop="@drawable/ic_home_unread" />
+                
+            <Button android:id="@+id/dashboard_btn_starred"
+                style="@style/DashboardButton"
+                android:text="@string/btn_starred"
+                android:drawableTop="@drawable/ic_home_starred" />
+                
+        </LinearLayout>
+        
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0">
+            
+            <Button android:id="@+id/dashboard_btn_popular"
+                style="@style/DashboardButton"
+                android:text="@string/btn_popular"
+                android:drawableTop="@drawable/ic_home_popular" />
+                
+            <Button android:id="@+id/dashboard_btn_subscriptions"
+                style="@style/DashboardButton"
+                android:text="@string/btn_subscriptions"
+                android:drawableTop="@drawable/ic_home_subscriptions" />
+                
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="75dip">
+        
+        <LinearLayout android:id="@+id/dashboard_marquee"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#333333">
+            
+        </LinearLayout>
+        
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shadow"
+            android:layout_alignTop="@id/dashboard_marquee" />
+            
+    </RelativeLayout>
+    
 </LinearLayout>
 
