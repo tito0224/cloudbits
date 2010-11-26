@@ -22,8 +22,19 @@
       android:versionName="0.1.1">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+      
     <uses-sdk android:targetSdkVersion="8" android:minSdkVersion="7" />
 
+    <supports-screens android:smallScreens="true"
+        android:normalScreens="true" android:largeScreens="true"
+        android:anyDensity="true" />
+        
     <application android:name="CloudbitsApplication" android:label="@string/app_name" android:icon="@drawable/icon">
         <activity android:name=".ui.DashboardActivity" android:theme="@style/Theme.Main"
                   android:label="@string/app_name">
@@ -32,6 +43,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <service android:name=".sync.SyncService" android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+        
+        <provider android:name=".provider.CloudbitsProvider" android:authorities="org.cloudbits"
+            android:label="Reader" android:syncable="true" />
     </application>
 </manifest> 
-

@@ -15,37 +15,25 @@
  */
 package org.cloudbits.sync;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.ResultReceiver;
+import android.os.IBinder;
 
-public class SyncService extends IntentService {
-    private static final String TAG = "SyncService";
-
-    public static final String EXTRA_STATUS_RECEIVER =
-        "org.cloudbits.extra.STATUS_RECEIVER";
-
-    public static final int STATUS_RUNNING = 0x1;
-    public static final int STATUS_ERROR = 0x2;
-    public static final int STATUS_FINISHED = 0x3;
-
-    public SyncService() {
-        super(TAG);
-    }
-
+public class SyncService extends Service {
+    private static final Object sSyncAdapterLock = new Object();
+    private static SyncAdapter sSyncAdapter = null;
+    
     @Override
     public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        final ResultReceiver receiver = intent.getParcelableExtra(EXTRA_STATUS_RECEIVER);
-    
-        if (receiver != null) {
-            receiver.send(STATUS_RUNNING, Bundle.EMPTY);
+        synchronized (sSyncAdapterLock) {
+            if (sSyncAdapter == null) {
+                sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
+            }
         }
     }
+    
+    @Override
+    public IBinder onBind(Intent intent) {
+        return sSyncAdapter.getSyncAdapterBinder();
+    }
 }
-
