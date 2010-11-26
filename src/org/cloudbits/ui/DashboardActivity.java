@@ -33,7 +33,7 @@ public class DashboardActivity extends Activity {
     }
     
     private void setDashboardTypeface() {
-        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/euro-regular.ttf");
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/euro-bold.ttf");
         
         Button btnUnread = (Button) findViewById(R.id.dashboard_btn_unread);
         btnUnread.setTypeface(tf);
