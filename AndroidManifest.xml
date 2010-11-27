@@ -53,6 +53,6 @@
         </service>
         
         <provider android:name=".provider.CloudbitsProvider" android:authorities="org.cloudbits"
-            android:label="Reader" android:syncable="true" />
+            android:label="Reader (Cloudbits)" android:syncable="true" />
     </application>
 </manifest> 
