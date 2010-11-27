@@ -18,6 +18,7 @@ package org.cloudbits.ui;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import org.cloudbits.R;
@@ -30,6 +31,12 @@ public class DashboardActivity extends Activity {
         setContentView(R.layout.activity_dashboard);
         
         setDashboardTypeface();
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Cloudbits", "In on resume");
     }
     
     private void setDashboardTypeface() {

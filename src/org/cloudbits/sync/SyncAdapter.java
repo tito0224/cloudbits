@@ -39,7 +39,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, 
         ContentProviderClient provider, SyncResult syncResult) {
-        Log.d("Cloudbits", "Starting sync process for account: " + account.name);        
+        Log.d("Cloudbits", "Starting sync process for account: " + account.name);
+        
+        try {
+            SyncService.performSync(mContext, account, extras, syncResult);
+        } catch (Exception e) {
+            ++syncResult.stats.numIoExceptions;
+        }
     }
 }
 

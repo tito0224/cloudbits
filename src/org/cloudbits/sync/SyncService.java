@@ -18,6 +18,7 @@ package org.cloudbits.sync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Service;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +36,8 @@ import org.cloudbits.provider.CloudbitsProvider;
 public class SyncService extends Service {
     public static final String ACCOUNT_TYPE = "com.google";
     public static final String KEY_TYPE = "org.cloudbits.SYNC_TYPE";
-    public static final String TYPE_READER = "org.cloudbits.TYPE_READER";
+    
+    public static final int TYPE_READER = 0x1;
     
     private static final Object sSyncAdapterLock = new Object();
     private static SyncAdapter sSyncAdapter = null;
@@ -47,11 +49,13 @@ public class SyncService extends Service {
     
     public static void requestSync(Context context, int type, long id) {
         Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
+        Bundle extras = new Bundle();
+        extras.putInt(KEY_TYPE, type);
         
         for (Account acct : accounts) {
             /* check if the account is set to sync automatically. */
             if (ContentResolver.getSyncAutomatically(acct, CloudbitsProvider.AUTHORITY)) {
-                ContentResolver.requestSync(acct, CloudbitsProvider.AUTHORITY, Bundle.EMPTY);
+                ContentResolver.requestSync(acct, CloudbitsProvider.AUTHORITY, extras);
             }
         }
     }
@@ -115,6 +119,19 @@ public class SyncService extends Service {
     }
     
     private static void performSyncImpl(Context context, Account account, Bundle extras, SyncResult syncResult) {
+        CloudbitsProvider provider = getContentProvider(context);
         
+        int type = extras.getInt(KEY_TYPE, TYPE_READER);
+        
+        switch (type) {
+        case TYPE_READER:
+            break;
+        }
+    }
+    
+    private static CloudbitsProvider getContentProvider(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        ContentProviderClient client = resolver.acquireContentProviderClient(CloudbitsProvider.AUTHORITY);
+        return (CloudbitsProvider) client.getLocalContentProvider();
     }
 }
