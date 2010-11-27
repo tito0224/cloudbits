@@ -15,13 +15,57 @@
  */
 package org.cloudbits.sync;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Service;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SyncResult;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Process;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.cloudbits.provider.CloudbitsProvider;
 
 public class SyncService extends Service {
+    public static final String ACCOUNT_TYPE = "com.google";
+    public static final String KEY_TYPE = "org.cloudbits.SYNC_TYPE";
+    public static final String TYPE_READER = "org.cloudbits.TYPE_READER";
+    
     private static final Object sSyncAdapterLock = new Object();
     private static SyncAdapter sSyncAdapter = null;
+    
+    private final HandlerThread mSyncThread = new HandlerThread("CloudbitsSyncThread");
+    private final Handler mSyncHandler;
+    
+    private static final AtomicBoolean sSyncPending = new AtomicBoolean(false);
+    
+    public static void requestSync(Context context, int type, long id) {
+        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
+        
+        for (Account acct : accounts) {
+            /* check if the account is set to sync automatically. */
+            if (ContentResolver.getSyncAutomatically(acct, CloudbitsProvider.AUTHORITY)) {
+                ContentResolver.requestSync(acct, CloudbitsProvider.AUTHORITY, Bundle.EMPTY);
+            }
+        }
+    }
+    
+    public SyncService() {
+        super();
+        mSyncThread.start();
+        mSyncHandler = new Handler(mSyncThread.getLooper());
+        mSyncHandler.post(new Runnable() {
+            public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            }
+        });
+    }
     
     @Override
     public void onCreate() {
@@ -33,7 +77,44 @@ public class SyncService extends Service {
     }
     
     @Override
+    public int onStartCommand(final Intent intent, int flags, final int startId) {
+        mSyncHandler.post(new Runnable() {
+            public void run() {
+                performSync(SyncService.this, null, intent.getExtras(), new SyncResult());
+                stopSelf(startId);
+            }
+        });
+        
+        return START_NOT_STICKY;
+    }
+    
+    @Override
+    public void onDestroy() {
+        mSyncThread.quit();
+    }
+    
+    @Override
     public IBinder onBind(Intent intent) {
         return sSyncAdapter.getSyncAdapterBinder();
+    }
+    
+    public static boolean performSync(Context context, Account account, Bundle extras, SyncResult syncResult) {
+        if (!sSyncPending.compareAndSet(false, true)) {
+            return false;
+        }
+        
+        performSyncImpl(context, account, extras, syncResult);
+        
+        sSyncPending.set(false);
+        
+        synchronized (sSyncPending) {
+            sSyncPending.notifyAll();
+        }
+        
+        return true;
+    }
+    
+    private static void performSyncImpl(Context context, Account account, Bundle extras, SyncResult syncResult) {
+        
     }
 }

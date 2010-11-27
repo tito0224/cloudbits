@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 public class CloudbitsProvider extends ContentProvider {
+    public static final String AUTHORITY = "org.cloudbits";
     
     @Override
     public boolean onCreate() {

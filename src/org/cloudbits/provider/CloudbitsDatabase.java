@@ -19,19 +19,15 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class FeedDatabase extends SQLiteOpenHelper {
-    private static final String DB_NAME = "feeds.db";
+public class CloudbitsDatabase extends SQLiteOpenHelper {
+    private static final String DB_NAME = "cloudbits.db";
     private static final int DB_VERSION = 1;
 
     interface Tables {
-        String FEEDS = "feeds";
-        String POSTS = "posts";
-        String FEEDS_SEARCH = "feeds_search";
-        String POSTS_SEARCH = "posts_search";
-        String SEARCH_SUGGEST = "search_suggest";
+        String SUBSCRIPTIONS = "subscriptions";
     }
 
-    public FeedDatabase(Context context) {
+    public CloudbitsDatabase(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
