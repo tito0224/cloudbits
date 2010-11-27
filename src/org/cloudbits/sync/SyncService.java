@@ -17,6 +17,10 @@ package org.cloudbits.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.app.Service;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -28,7 +32,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
+import android.util.Log;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.cloudbits.provider.CloudbitsProvider;
@@ -118,13 +124,40 @@ public class SyncService extends Service {
         return true;
     }
     
-    private static void performSyncImpl(Context context, Account account, Bundle extras, SyncResult syncResult) {
+    private static void performSyncImpl(final Context context, final Account account, final Bundle extras, final SyncResult syncResult) {        
+        /* we need to authenticate with the user. */
+        AccountManager manager = AccountManager.get(context);
+        manager.getAuthToken(account, "reader", false, new AccountManagerCallback<Bundle>() {
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    Bundle result = future.getResult();
+                    
+                    if (result.containsKey(AccountManager.KEY_INTENT)) {
+                        Intent intent = new Intent(context, PermissionActivity.class);
+                        intent.putExtras(result);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                        return;
+                    }
+                    
+                    syncWithAuthToken(context, account, syncResult, extras.getInt(KEY_TYPE, TYPE_READER), result.getString(AccountManager.KEY_AUTHTOKEN));
+                } catch (OperationCanceledException e) {
+                    Log.e("Cloudbit", "Exception: " + e.toString());
+                } catch (IOException e) {
+                    Log.e("Cloudbits", "Exception: " + e.toString());
+                } catch (AuthenticatorException e) {
+                    Log.e("Cloudbits", "Exception: " + e.toString());
+                }
+            }
+        }, null);        
+    }
+    
+    private static void syncWithAuthToken(final Context context, final Account account, final SyncResult syncResult, int type, String authToken) {
         CloudbitsProvider provider = getContentProvider(context);
-        
-        int type = extras.getInt(KEY_TYPE, TYPE_READER);
         
         switch (type) {
         case TYPE_READER:
+            Log.d("Cloudbits", "Starting Google Reader sync for account: " + account.name);
             break;
         }
     }
