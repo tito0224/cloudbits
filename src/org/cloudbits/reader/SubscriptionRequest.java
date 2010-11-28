@@ -15,10 +15,38 @@
  */
 package org.cloudbits.reader;
 
+import android.util.Log;
+
 public class SubscriptionRequest extends BaseRequest {
     public static final String API_SUBSCRIPTION = "subscription";
-    
-    public void parseResponse() {
-        
+    public static final String ACTION_LIST = "list";
+
+    public void list(String sid) {
+		String baseUrl = String.format("%s/%s/%s", API_BASE, API_SUBSCRIPTION, ACTION_LIST);
+		String ts = String.valueOf(System.currentTimeMillis());
+
+		RESTClient client = new RESTClient(baseUrl);
+
+		client.addHeader("sid", sid);
+		client.addParam("output", OUTPUT);
+		client.addParam("ck", ts);
+		client.addParam("client", CLIENT);
+		client.get();
+
+		String response = client.getResponseContent();
+
+		parseResponse(response);
+	}
+	
+	public void edit(String sid) {
+		
+	}
+
+    public void parseResponse(String response) {
+        if(response != null) {
+			Log.d("Cloudbits", response);
+		}
     }
+
+	
 }

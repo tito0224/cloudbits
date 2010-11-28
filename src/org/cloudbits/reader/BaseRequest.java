@@ -19,10 +19,10 @@ public abstract class BaseRequest {
     public static final String API_BASE = "http://www.google.com/reader/api/0/";
     public static final String ACTION_LIST = "list";
     public static final String ACTION_EDIT = "edit";
+	public static final String CLIENT = "cloudbits";
+	public static final String OUTPUT = "json";
     
-    public abstract void parseResponse();
-    
-    public void execute(String url) {
-        
-    }
+    public abstract void parseResponse(String response);
+    public abstract void list(String sid);
+	public abstract void edit(String sid);
 }
